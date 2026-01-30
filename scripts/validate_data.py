@@ -1,8 +1,12 @@
 import great_expectations as gx
 import pandas as pd
+from pathlib import Path
 
+DATA_PATH = Path(__file__).resolve().parents[1] / "data" / "scaled_data_clusters.csv"
 def validate_data():
-    df = pd.read_csv('./data/scaled_data_clusters.csv')
+    if not DATA_PATH.exists():
+        raise FileNotFoundError(f"Expected data file at: {DATA_PATH}")
+    df = pd.read_csv(DATA_PATH)
     df.expect_column_value_to_not_be_null('Insulin')
     df.expect_column_value_to_not_be_null('BMI')
     df.expect_column_value_to_not_be_null('DiabetesPedigreeFunction')
