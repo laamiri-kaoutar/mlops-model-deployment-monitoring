@@ -1,7 +1,8 @@
 import great_expectations as gx
+import pandas as pd
 
 def validate_data():
-    df = gx.read_csv('../data/scaled_data_clusters.csv')
+    df = pd.read_csv('../data/scaled_data_clusters.csv')
     df.expect_column_value_to_not_be_null('Insulin')
     df.expect_column_value_to_not_be_null('BMI')
     df.expect_column_value_to_not_be_null('DiabetesPedigreeFunction')
