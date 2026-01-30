@@ -1,4 +1,4 @@
-import greate_expectations as gx
+import great_expectations as gx
 
 def validate_data():
     df = gx.read_csv('../data/scaled_data_clusters.csv')
