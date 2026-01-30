@@ -30,5 +30,7 @@ jobs:
 
       - name: Run quality data
         run: python scripts/validate_data.py
+      - name: Run model evaluation
+        run: python scripts/model_evaluate.py
 
       - run: echo "🍏 This job's status is ${{ job.status }}."
