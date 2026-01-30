@@ -26,7 +26,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install great_expectations pandas
+          pip install great_expectations pandas||scikit-learn||joblib
 
       - name: Run quality data
         run: python scripts/validate_data.py
