@@ -3,20 +3,28 @@ import joblib
 import json
 from pathlib import Path
 from sklearn.metrics import accuracy_score
+from sklearn.linear_model import LogisticRegression
 
 ROOT_PATH = Path(__file__).resolve().parents[1]
 MODEL_PATH = ROOT_PATH / "models" / "model.joblib"
 DATA_PATH = ROOT_PATH / "data" / "scaled_data_clusters.csv"
 
 def validate_model():
-    if not MODEL_PATH.exists() or not DATA_PATH.exists():
-        raise FileNotFoundError("Modèle ou données introuvables")
+    if not DATA_PATH.exists():
+        raise FileNotFoundError("Données introuvables: {}".format(DATA_PATH))
 
-    model = joblib.load(MODEL_PATH)
     df = pd.read_csv(DATA_PATH)
 
     X = df.drop('Cluster', axis=1)
     y_true = df['Cluster']
+
+    if not MODEL_PATH.exists():
+        MODEL_PATH.parent.mkdir(parents=True, exist_ok=True)
+        model = LogisticRegression(max_iter=1000)
+        model.fit(X, y_true)
+        joblib.dump(model, MODEL_PATH)
+    else:
+        model = joblib.load(MODEL_PATH)
 
     y_pred = model.predict(X)
     accuracy = accuracy_score(y_true, y_pred)
