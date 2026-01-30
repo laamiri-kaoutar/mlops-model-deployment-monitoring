@@ -5,8 +5,8 @@ __pycache__/
 venv/
 env/
 
-# Data
-data/
+# # Data
+# data/
 
 # MLflow
 mlruns/
