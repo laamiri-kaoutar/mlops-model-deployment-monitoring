@@ -8,14 +8,21 @@ from sklearn.linear_model import LogisticRegression
 ROOT_PATH = Path(__file__).resolve().parents[1]
 MODEL_PATH = ROOT_PATH / "models" / "model.joblib"
 DATA_PATH = ROOT_PATH / "data" / "scaled_data_clusters.csv"
+FEATURES = [
+    'Glucose', 'Age', 'BloodPressure', 'SkinThickness',
+    'BMI', 'Insulin_log', 'DiabetesPedigreeFunction_log'
+]
 
 def validate_model():
     if not DATA_PATH.exists():
         raise FileNotFoundError("Données introuvables: {}".format(DATA_PATH))
 
     df = pd.read_csv(DATA_PATH)
+    missing = [c for c in FEATURES + ['Cluster'] if c not in df.columns]
+    if missing:
+        raise ValueError(f"Missing required columns for evaluation: {missing}")
 
-    X = df.drop('Cluster', axis=1)
+    X = df[FEATURES]
     y_true = df['Cluster']
 
     if not MODEL_PATH.exists():
