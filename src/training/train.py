@@ -15,7 +15,7 @@ from sklearn.metrics import (
     recall_score,
     roc_auc_score,
     confusion_matrix,
-    roc_curve
+    roc_curve,
 )
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -29,6 +29,7 @@ mlflow.set_tracking_uri(MLFLOW_URI)
 mlflow.set_experiment("Diabetes_Risk_Comparison")
 
 DATA_PATH = "data/scaled_data_clusters.csv"
+
 
 # ----------------------
 # UTILITY FUNCTIONS
@@ -44,6 +45,7 @@ def log_confusion_matrix(y_true, y_pred, model_name):
     mlflow.log_artifact(f"confusion_matrix_{model_name}.png", artifact_path="plots")
     plt.close()
 
+
 def log_roc_curve(y_true, y_proba, model_name):
     fpr, tpr, _ = roc_curve(y_true, y_proba)
     plt.figure()
@@ -56,20 +58,28 @@ def log_roc_curve(y_true, y_proba, model_name):
     mlflow.log_artifact(f"roc_curve_{model_name}.png", artifact_path="plots")
     plt.close()
 
+
 # ----------------------
 # MAIN TRAIN FUNCTION
 # ----------------------
 def main():
     # Load data
     df = pd.read_csv(DATA_PATH)
-    
-    features = ['Glucose', 'Age', 'BloodPressure', 'SkinThickness',
-                'BMI', 'Insulin_log', 'DiabetesPedigreeFunction_log']
-    target = 'Cluster'
-    
+
+    features = [
+        "Glucose",
+        "Age",
+        "BloodPressure",
+        "SkinThickness",
+        "BMI",
+        "Insulin_log",
+        "DiabetesPedigreeFunction_log",
+    ]
+    target = "Cluster"
+
     X = df[features]
     y = df[target]
-    
+
     X_train, X_test, y_train, y_test = train_test_split(
         X, y, test_size=0.2, random_state=42, stratify=y
     )
@@ -80,7 +90,7 @@ def main():
         "Random_Forest": RandomForestClassifier(n_estimators=100, max_depth=10),
         "SVM": SVC(probability=True),
         "Gradient_Boosting": GradientBoostingClassifier(),
-        "XGBoost": XGBClassifier(use_label_encoder=False, eval_metric='logloss')
+        "XGBoost": XGBClassifier(use_label_encoder=False, eval_metric="logloss"),
     }
 
     # Train each model
@@ -125,22 +135,29 @@ def main():
 
             # Feature importance
             if hasattr(model, "feature_importances_"):
-                fi = pd.DataFrame({
-                    "feature": features,
-                    "importance": model.feature_importances_
-                }).sort_values("importance", ascending=False)
+                fi = pd.DataFrame(
+                    {"feature": features, "importance": model.feature_importances_}
+                ).sort_values("importance", ascending=False)
                 fi.to_csv(f"feature_importance_{model_name}.csv", index=False)
-                mlflow.log_artifact(f"feature_importance_{model_name}.csv", artifact_path="explainability")
+                mlflow.log_artifact(
+                    f"feature_importance_{model_name}.csv",
+                    artifact_path="explainability",
+                )
 
             # Log model
             if "XGBoost" in model_name:
-                mlflow.xgboost.log_model(model, artifact_path="model", input_example=X_test.iloc[:5])
+                mlflow.xgboost.log_model(
+                    model, artifact_path="model", input_example=X_test.iloc[:5]
+                )
             else:
-                mlflow.sklearn.log_model(model, artifact_path="model", input_example=X_test.iloc[:5])
+                mlflow.sklearn.log_model(
+                    model, artifact_path="model", input_example=X_test.iloc[:5]
+                )
 
             print(f"--> {model_name} logged successfully!")
 
     print("DONE — open MLflow UI and check artifacts, metrics, and models.")
+
 
 # ----------------------
 if __name__ == "__main__":

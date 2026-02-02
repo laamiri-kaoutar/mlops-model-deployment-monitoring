@@ -9,6 +9,7 @@ DATA_PATH = "data/scaled_data_clusters.csv"
 # Output path for the new scaler
 OUTPUT_PATH = "src/app/scaler.pkl"
 
+
 def generate_scaler():
     if not os.path.exists(DATA_PATH):
         print(f"ERROR: Could not find data at {DATA_PATH}")
@@ -19,9 +20,16 @@ def generate_scaler():
     df = pd.read_csv(DATA_PATH)
 
     # EXACT feature columns used in your API
-    features = ['Glucose', 'Age', 'BloodPressure', 'SkinThickness', 
-                'BMI', 'Insulin_log', 'DiabetesPedigreeFunction_log']
-    
+    features = [
+        "Glucose",
+        "Age",
+        "BloodPressure",
+        "SkinThickness",
+        "BMI",
+        "Insulin_log",
+        "DiabetesPedigreeFunction_log",
+    ]
+
     print("Fitting scaler...")
     scaler = StandardScaler()
     scaler.fit(df[features])
@@ -30,8 +38,9 @@ def generate_scaler():
     # protocol=4 ensures compatibility between Python 3.8 and 3.12+
     with open(OUTPUT_PATH, "wb") as f:
         pickle.dump(scaler, f, protocol=4)
-    
+
     print("✅ Success! New scaler.pkl generated.")
+
 
 if __name__ == "__main__":
     generate_scaler()

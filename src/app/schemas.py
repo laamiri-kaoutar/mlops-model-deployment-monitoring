@@ -1,5 +1,6 @@
 from pydantic import BaseModel
 
+
 class PatientData(BaseModel):
     Glucose: float
     Age: int
@@ -19,6 +20,6 @@ class PatientData(BaseModel):
                 "SkinThickness": 35.0,
                 "BMI": 33.6,
                 "Insulin_log": 2.0,
-                "DiabetesPedigreeFunction_log": 0.5
+                "DiabetesPedigreeFunction_log": 0.5,
             }
         }
