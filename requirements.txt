@@ -13,3 +13,5 @@ matplotlib
 seaborn
 numpy
 joblib
+flake8
+black
