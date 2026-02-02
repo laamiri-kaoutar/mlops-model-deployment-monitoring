@@ -30,7 +30,7 @@ scaler = None  # <--- Added global variable for scaler
 # --- LIFESPAN MANAGER (Loads model & scaler on startup) ---
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    global model, scaler
+    # global model, scaler
     print(f"Connecting to MLflow at {MLFLOW_TRACKING_URI}...")
     mlflow.set_tracking_uri(MLFLOW_TRACKING_URI)
     
@@ -69,7 +69,7 @@ def read_root():
     return {"message": "Diabetes Prediction API is running"}
 @app.post("/predict")
 def predict(data: PatientData):
-    global model, scaler
+    # global model, scaler
     
     if not model or not scaler:
         raise HTTPException(status_code=503, detail="Model or Scaler not loaded")
